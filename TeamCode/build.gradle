@@ -32,7 +32,6 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation project(':InventorsFtcLib')
 
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.16'
     implementation 'org.openftc:easyopencv:1.7.3'
@@ -44,5 +43,5 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
     implementation 'com.acmerobotics.roadrunner:core:0.5.6'
 
-//    implementation 'com.github.theinventors-ftc:InventorsFtcLib:566cab5'
+    implementation 'com.github.theinventors-ftc:InventorsFtcLib:566cab5'
 }
