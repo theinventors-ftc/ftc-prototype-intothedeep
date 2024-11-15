@@ -26,8 +26,8 @@ public class PrototypeRobot extends RobotEx {
     protected ElevatorSubsystem elevatorSubsystem;
     protected TiltSubsystem tiltSubsystem;
     public PrototypeRobot(HardwareMap hm, DriveConstants RobotConstants, Telemetry telemetry,
-                            GamepadExEx driverOp, GamepadExEx toolOp, OpModeType opModeType,
-                            Alliance alliance, String imuName, boolean camera, Pose2d startingPose) {
+                          GamepadExEx driverOp, GamepadExEx toolOp, OpModeType opModeType,
+                          Alliance alliance, String imuName, boolean camera, Pose2d startingPose) {
         super(hm, RobotConstants, telemetry, driverOp, toolOp, opModeType, alliance, imuName, camera,
                 false, startingPose);
     }

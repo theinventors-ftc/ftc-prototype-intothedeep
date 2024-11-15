@@ -16,7 +16,7 @@ public class ClawSubsystem extends SubsystemBase {
     private State state;
     public ClawSubsystem(HardwareMap hm) {
         clawServo = hm.get(ServoImplEx.class, "claw");
-        this.grab();
+        this.release();
     }
 
     public void grab() {
