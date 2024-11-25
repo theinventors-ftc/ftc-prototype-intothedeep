@@ -59,8 +59,8 @@ public class TrajectorySequenceBuilder {
 
     private TrajectoryBuilder currentTrajectoryBuilder;
 
-    private double currentDuration;
-    private double currentDisplacement;
+    public volatile double currentDuration;
+    public volatile double currentDisplacement;
 
     private double lastDurationTraj;
     private double lastDisplacementTraj;

@@ -1,20 +1,35 @@
 package org.firstinspires.ftc.teamcode.AutonomousOPs;
 
-import static org.firstinspires.ftc.teamcode.AutonomousOPs.BuilderFunctions.Tile;
-import static org.firstinspires.ftc.teamcode.AutonomousOPs.BuilderFunctions.robotX;
-import static org.firstinspires.ftc.teamcode.AutonomousOPs.BuilderFunctions.robotY;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.Tile;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.robotX;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.robotY;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.basketRed;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.init_mechanisms;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleLeftRed;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleMidRed;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleRightRed;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.release;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.scoreBasket;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.startPoseRedLeft;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.submersibleSideRed;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.takeSample;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.temp;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.AutonomousOPs.Features.CrashDetection;
 import org.firstinspires.ftc.teamcode.AutonomousOPs.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.AutonomousOPs.trajectorysequence.TrajectorySequenceBuilder;
 
 @Autonomous(name = "Autonomous Left Red")
-public class Auto_Op_Mode extends LinearOpMode {
+public class Red_Left extends CommandOpMode {
 
     private SampleMecanumDrive drive;
+    private CrashDetection cr;
 
     private TrajectorySequenceBuilder
         toNeutral_0,
@@ -25,79 +40,81 @@ public class Auto_Op_Mode extends LinearOpMode {
 
     private volatile Pose2d current_pose;
 
-    private Pose2d
-        startPoseRedLeft = new Pose2d(
-            -Tile + robotX/2, (-3 * Tile) + robotY/2, Math.toRadians(90)
-        ),
-
-        submersibleSide = new Pose2d(
-            (-Tile) - robotY/2  , -Tile/2, Math.toRadians(0)
-        ),
-
-        basket = new Pose2d(
-            (-2.5 * Tile) + robotX/2, -2 * Tile, Math.toRadians(225)
-        ),
-
-        neutralPixelLeft = new Pose2d(
-            -2.5 * Tile, -1.5 * Tile, Math.toRadians(135)
-        ),
-
-        neutralPixelMid = new Pose2d(
-            -2.5 * Tile, -1.5 * Tile, Math.toRadians(90)
-        ),
-
-        neutralPixelRight = new Pose2d(
-            -2.5 * Tile, -1.5 * Tile, Math.toRadians(45)
-        );
-
     public void init_toNeutral_0() {
         toNeutral_0 = drive.trajectorySequenceBuilder(startPoseRedLeft)
-            .splineToLinearHeading(neutralPixelLeft, Math.toRadians(135));
+            .splineToLinearHeading(neutralSampleLeftRed, Math.toRadians(135));
     }
     public void init_toBasket() {
         toBasket = drive.trajectorySequenceBuilder(current_pose)
-            .lineToLinearHeading(basket);
+            .lineToLinearHeading(basketRed);
     }
     public void init_toNeutral_1() {
         toNeutral_1 = drive.trajectorySequenceBuilder(current_pose)
-            .lineToLinearHeading(neutralPixelMid);
+            .lineToLinearHeading(neutralSampleMidRed);
     }
     public void init_toNeutral_2() {
         toNeutral_2 = drive.trajectorySequenceBuilder(current_pose)
-            .lineToLinearHeading(neutralPixelRight);
+            .lineToLinearHeading(neutralSampleRightRed);
     }
     public void init_toAscentZone() {
         toAscentZone = drive.trajectorySequenceBuilder(current_pose)
             .setTangent(0)
-            .splineToSplineHeading(submersibleSide, Math.toRadians(0));
+            .splineToSplineHeading(submersibleSideRed, Math.toRadians(0));
+    }
+
+//    public double getCurrentRobotVelocity() {
+//        return Math.hypot(drive.getWheelVelocities().get(0),
+//                          drive.getWheelVelocities().get(1));
+//    }
+
+//    public double getCurrentTargetRobotVelocity() {
+//        return drive.currentDuration;
+//    }
+
+    @Override
+    public void initialize() {
+        drive = new SampleMecanumDrive(hardwareMap);
+        drive.setPoseEstimate(startPoseRedLeft);
+        init_mechanisms(hardwareMap, telemetry);
+//        cr = new CrashDetection();
     }
 
     @Override
-    public void runOpMode() {
-        drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(startPoseRedLeft);
-
-        waitForStart();
-
-        if(isStopRequested()) return;
+    public void run() {
 
         init_toNeutral_0();
         drive.followTrajectorySequenceAsync(toNeutral_0.build());
         while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
             drive.update();
+//            cr.crashCheck(getCurrentRobotVelocity(), );
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
         current_pose = drive.getPoseEstimate();
 
 
+        temp = takeSample();
+        temp.schedule();
+        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+            run();
+        }
+
+        temp = scoreBasket();
+        temp.schedule();
         init_toBasket();
         drive.followTrajectorySequenceAsync(toBasket.build());
-        while (!isStopRequested() && opModeIsActive() && drive.isBusy()) {
+        while (!isStopRequested() && opModeIsActive() && drive.isBusy()
+                        && CommandScheduler.getInstance().isScheduled(temp)) {
+            run();
             drive.update();
         }
         drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
         current_pose = drive.getPoseEstimate();
 
+        temp = release();
+        temp.schedule();
+        while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
+            run();
+        }
 
         init_toNeutral_1();
         drive.followTrajectorySequenceAsync(toNeutral_1.build());

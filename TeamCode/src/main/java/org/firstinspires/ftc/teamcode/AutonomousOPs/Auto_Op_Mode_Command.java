@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.AutonomousOPs;
 
-import static org.firstinspires.ftc.teamcode.AutonomousOPs.BuilderFunctions.Tile;
-import static org.firstinspires.ftc.teamcode.AutonomousOPs.BuilderFunctions.robotX;
-import static org.firstinspires.ftc.teamcode.AutonomousOPs.BuilderFunctions.robotY;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.Tile;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.robotX;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.robotY;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.AutonomousOPs.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.AutonomousOPs.trajectorysequence.TrajectorySequenceBuilder;
