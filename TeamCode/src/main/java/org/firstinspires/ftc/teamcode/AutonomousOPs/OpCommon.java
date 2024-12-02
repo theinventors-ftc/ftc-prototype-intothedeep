@@ -30,29 +30,79 @@ public class OpCommon extends CommandBase {
      *  Alliances Poses
      */
     public static final Pose2d
-        /*- RED -*/
-        startPoseRedLeft = new Pose2d(
-            -Tile + robotX/2, (-3 * Tile) + robotY/2, Math.toRadians(90)
-        ),
 
+        /*- RED -*/
         submersibleSideRed = new Pose2d(
             (-Tile) - robotY/2  , -Tile/2, Math.toRadians(0)
         ),
-
+        submersibleAllianceRed = new Pose2d(
+            0 , -Tile - robotY/2, Math.toRadians(90)
+        ),
         basketRed = new Pose2d(
             (-2.5 * Tile) + robotX/2, -2 * Tile, Math.toRadians(225)
         ),
 
+        startPoseRedLeft = new Pose2d(
+            -Tile + robotX/2, (-3 * Tile) + robotY/2, Math.toRadians(90)
+        ),
         neutralSampleLeftRed = new Pose2d(
             -2.5 * Tile, -1.5 * Tile, Math.toRadians(135)
         ),
-
         neutralSampleMidRed = new Pose2d(
             -2.5 * Tile, -1.5 * Tile, Math.toRadians(90)
         ),
-
         neutralSampleRightRed = new Pose2d(
             -2.5 * Tile, -1.5 * Tile, Math.toRadians(45)
+        ),
+
+        startPoseRedRight = new Pose2d(
+            -Tile + robotX/2, (3 * Tile) + robotY/2, Math.toRadians(90)
+        ),
+        allianceSampleLeftRed = new Pose2d(
+            -2.5 * Tile, 1.5 * Tile, Math.toRadians(135)
+        ),
+        allianceSampleMidRed = new Pose2d(
+            -2.5 * Tile, 1.5 * Tile, Math.toRadians(90)
+        ),
+        allianceSampleRightRed = new Pose2d(
+            -2.5 * Tile, 1.5 * Tile, Math.toRadians(45)
+        ),
+
+        /*- BLUE -*/
+        submersibleSideBlue = new Pose2d(
+            (-Tile) - robotY/2  , Tile/2, Math.toRadians(0)
+        ),
+        submersibleAllianceBlue = new Pose2d(
+            0 , Tile + robotY/2, Math.toRadians(270)
+        ),
+        basketBlue = new Pose2d(
+            (-2.5 * Tile) + robotX/2, 2 * Tile, Math.toRadians(225)
+        ),
+
+        startPoseBlueLeft = new Pose2d(
+            -Tile + robotX/2, (3 * Tile) + robotY/2, Math.toRadians(90)
+        ),
+        neutralSampleLeftBlue = new Pose2d(
+            -2.5 * Tile, 1.5 * Tile, Math.toRadians(135)
+        ),
+        neutralSampleMidBlue = new Pose2d(
+            -2.5 * Tile, 1.5 * Tile, Math.toRadians(90)
+        ),
+        neutralSampleRightBlue = new Pose2d(
+            -2.5 * Tile, 1.5 * Tile, Math.toRadians(45)
+        ),
+
+        startPoseBlueRight = new Pose2d(
+             Tile + robotX/2, (3 * Tile) + robotY/2, Math.toRadians(90)
+        ),
+        allianceSampleLeftBlue = new Pose2d(
+            2.5 * Tile, 1.5 * Tile, Math.toRadians(135)
+        ),
+        allianceSampleMidBlue = new Pose2d(
+            2.5 * Tile, 1.5 * Tile, Math.toRadians(90)
+        ),
+        allianceSampleRightBlue = new Pose2d(
+            2.5 * Tile, 1.5 * Tile, Math.toRadians(45)
         );
 
     /**
@@ -62,9 +112,14 @@ public class OpCommon extends CommandBase {
         return new SequentialCommandGroup(
             new InstantCommand(tiltSubsystem::go_intake, tiltSubsystem),
             new WaitCommand(500),
-            new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.OPEN),
-            new InstantCommand(clawSubsystem::grab, clawSubsystem),
-            new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.CLOSED)
+            new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.OPEN)
+        );
+    }
+
+    public static SequentialCommandGroup grab() {
+        return new SequentialCommandGroup(
+                new InstantCommand(clawSubsystem::grab, clawSubsystem),
+                new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.CLOSED)
         );
     }
 
@@ -88,8 +143,8 @@ public class OpCommon extends CommandBase {
      * Initialization of all subsystems and mechanisms
      */
     public static void init_mechanisms(HardwareMap hm, Telemetry tele) {
-        tiltSubsystem = new TiltSubsystem(hm, tele);
         elevatorSubsystem = new ElevatorSubsystem(hm, tele, ()-> 0.0);
+        tiltSubsystem = new TiltSubsystem(hm, tele, () -> elevatorSubsystem.getHeight());
         clawSubsystem = new ClawSubsystem(hm);
     }
 }

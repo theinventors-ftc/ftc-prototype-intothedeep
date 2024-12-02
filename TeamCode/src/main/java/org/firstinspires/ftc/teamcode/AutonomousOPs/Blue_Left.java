@@ -3,15 +3,21 @@ package org.firstinspires.ftc.teamcode.AutonomousOPs;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.Tile;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.robotX;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.Features.BuilderFunctions.robotY;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.basketBlue;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.basketRed;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.grab;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.init_mechanisms;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleLeftBlue;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleLeftRed;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleMidBlue;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleMidRed;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleRightBlue;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.neutralSampleRightRed;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.release;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.scoreBasket;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.startPoseBlueLeft;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.startPoseRedLeft;
+import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.submersibleSideBlue;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.submersibleSideRed;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.takeSample;
 import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.temp;
@@ -19,48 +25,50 @@ import static org.firstinspires.ftc.teamcode.AutonomousOPs.OpCommon.temp;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.AutonomousOPs.Features.CrashDetection;
 import org.firstinspires.ftc.teamcode.AutonomousOPs.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.AutonomousOPs.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.PrototypeRobot.Commands.ElevatorCommand;
 
-@Autonomous(name = "Autonomous Left Red")
-public class Red_Left extends CommandOpMode {
+@Autonomous(name = "Autonomous Left Blue")
+public class Blue_Left extends CommandOpMode {
 
     private SampleMecanumDrive drive;
 //    private CrashDetection cr;
 
     private TrajectorySequenceBuilder
-        toNeutral_0,
-        toNeutral_1,
-        toNeutral_2,
-        toBasket,
-        toAscentZone;
+            toNeutral_0,
+            toNeutral_1,
+            toNeutral_2,
+            toBasket,
+            toAscentZone;
 
     private volatile Pose2d current_pose;
 
     public void init_toNeutral_0() {
-        toNeutral_0 = drive.trajectorySequenceBuilder(startPoseRedLeft)
-            .splineToLinearHeading(neutralSampleLeftRed, Math.toRadians(135));
+        toNeutral_0 = drive.trajectorySequenceBuilder(startPoseBlueLeft)
+                .splineToLinearHeading(neutralSampleLeftBlue, Math.toRadians(135));
     }
     public void init_toBasket() {
         toBasket = drive.trajectorySequenceBuilder(current_pose)
-            .lineToLinearHeading(basketRed);
+                .lineToLinearHeading(basketBlue);
     }
     public void init_toNeutral_1() {
         toNeutral_1 = drive.trajectorySequenceBuilder(current_pose)
-            .lineToLinearHeading(neutralSampleMidRed);
+                .lineToLinearHeading(neutralSampleMidBlue);
     }
     public void init_toNeutral_2() {
         toNeutral_2 = drive.trajectorySequenceBuilder(current_pose)
-            .lineToLinearHeading(neutralSampleRightRed);
+                .lineToLinearHeading(neutralSampleRightBlue);
     }
     public void init_toAscentZone() {
         toAscentZone = drive.trajectorySequenceBuilder(current_pose)
-            .setTangent(0)
-            .splineToSplineHeading(submersibleSideRed, Math.toRadians(0));
+                .setTangent(0)
+                .splineToSplineHeading(submersibleSideBlue, Math.toRadians(0));
     }
 
 //    public double getCurrentRobotVelocity() {
@@ -75,7 +83,7 @@ public class Red_Left extends CommandOpMode {
     @Override
     public void initialize() {
         drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(startPoseRedLeft);
+        drive.setPoseEstimate(startPoseBlueLeft);
         init_mechanisms(hardwareMap, telemetry);
 //        cr = new CrashDetection();
     }
@@ -198,6 +206,8 @@ public class Red_Left extends CommandOpMode {
         while (!isStopRequested() && opModeIsActive() && CommandScheduler.getInstance().isScheduled(temp)) {
             run();
         }
+
+        //-----
 
         init_toAscentZone();
         drive.followTrajectorySequenceAsync(toAscentZone.build());
